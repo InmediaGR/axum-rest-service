@@ -12,7 +12,7 @@ async fn main() -> Result<(), ()> {
     info!("server is running up ...");
     migrations::run().await;
     // test cache connection
-    // cache::get_connection().await.expect("Failed to create cache connection");
+    cache::get_connection().await.expect("Failed to create cache connection");
     web::server::run().await;
     Ok(())
 }
