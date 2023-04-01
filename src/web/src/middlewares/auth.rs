@@ -8,6 +8,7 @@ use axum::{
 };
 use jsonwebtoken::errors::ErrorKind;
 use tracing::info;
+use tracing::debug;
 use service::user::user_dto::UserDto;
 use utils::core::jwt;
 use crate::middlewares::dto::user::UserPayload;
@@ -23,6 +24,7 @@ pub async fn guard<B>(
     next: Next<B>,
 ) -> Result<Response, StatusCode> {
     let jwt_token = token.token().to_owned();
+    debug!("!########### {}", jwt_token);
     let token_payload_result = jwt::jwt_decode(&jwt_token[..]);
 
     if let Err(err) = token_payload_result {

@@ -1,6 +1,7 @@
 use utils::core::cache;
 use core::option::Option;
 use tracing::info;
+use tracing::debug;
 
 const USER_ID: &str = "user_id ";
 const USER_TOKEN: &str = "user_token ";
@@ -8,6 +9,7 @@ const USER_TOKEN: &str = "user_token ";
 pub async fn cache_refresh_user_data(id: u32, token: &str) {
     // 1. check current token in cache
     let user_id = &format!("{}{}", USER_ID, id);
+    debug!("!@@@@@@!user_id {}", user_id.to_string());
     match cache::get_key(&user_id[..]).await {
         Some(stored_token) => {
             if stored_token.ne(&token[..]) {
@@ -35,16 +37,23 @@ async fn cache_set_data(id: u32, token: &str) {
 
 pub async fn get_cached_user_token_by_id(id: u32) -> Option<String> {
     let key = &format!("{}{}", USER_ID, id);
+    info!("!!get_cached_user_token_by_id {}", key);
     get_cached_value_by_key(&key[..]).await
 }
 
 pub async fn get_cached_user_id_by_token(token: &str) -> Option<u32> {
     let key = &format!("{}{}", USER_TOKEN, token);
+    
     match get_cached_value_by_key(&key[..]).await {
         Some(data) => {
+            info!("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!get_cached_user_id_by_token {}", data);
             Some(data.parse::<u32>().unwrap())
         },
-        None => None
+        None => {
+            info!("!!!!NOPOOO");
+            None
+        }
+
     }
 }
 
